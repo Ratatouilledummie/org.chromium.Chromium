@@ -32,4 +32,5 @@ fi
 unlink_profiles
 
 export LIBGL_DRIVERS_PATH=/usr/lib/$(uname -m)-linux-gnu/GL/lib/dri
+export LIBVA_DRIVERS_PATH=/usr/lib/$(uname -m)-linux-gnu/GL/lib/dri
 exec cobalt "$@"
