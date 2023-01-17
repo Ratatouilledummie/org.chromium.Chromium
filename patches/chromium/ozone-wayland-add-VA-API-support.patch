@@ -1,0 +1,37 @@
+From: Maksim Sisov <msisov@igalia.com>
+Date: Wed, 20 Jan 2021 09:50:22 +0200
+Subject: [PATCH] ozone/wayland: add VA-API support.
+
+This patch ads VA-API support utilizing old VA-API path used for
+ChromeOS, which can be buggy on some devices (currently tested
+on Intel Gen8 and Gen9 with Gen8 having some minor bugs).
+
+It's known that a new VA-API is being developed atm and once it's ready,
+we will switch to a new path, which should be more stable.
+
+Upstream-Status: Inappropriate
+
+The patch is based on the old va-api path. ChromeOS
+team is working on the new path, which will be also employed
+by Wayland later.
+
+---
+diff --git a/media/gpu/vaapi/vaapi_picture_factory.cc b/media/gpu/vaapi/vaapi_picture_factory.cc
+index 7f44de0..618dcd6 100644
+--- a/media/gpu/vaapi/vaapi_picture_factory.cc
++++ b/media/gpu/vaapi/vaapi_picture_factory.cc
+@@ -106,7 +106,7 @@ uint32_t VaapiPictureFactory::GetGLTextureTarget() {
+ }
+ 
+ gfx::BufferFormat VaapiPictureFactory::GetBufferFormat() {
+-#if BUILDFLAG(USE_VAAPI_X11)
++#if BUILDFLAG(IS_LINUX)
+   return gfx::BufferFormat::RGBX_8888;
+ #else
+   return gfx::BufferFormat::YUV_420_BIPLANAR;
+diff --git a/media/gpu/vaapi/vaapi_picture_native_pixmap.cc b/media/gpu/vaapi/vaapi_picture_native_pixmap.cc
+index 18c6c22..fe614b6 100644
+--- a/media/gpu/vaapi/vaapi_picture_native_pixmap.cc
++++ b/media/gpu/vaapi/vaapi_picture_native_pixmap.cc
+@@ -4,6 +4,7 @@
+ 
